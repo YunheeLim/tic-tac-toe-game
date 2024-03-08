@@ -1,25 +1,31 @@
 import { useState } from "react";
 
-export default function Player({ name, symbol }) {
+export default function Player({ initialName, symbol }) {
   const [isEditing, setIsEditing] = useState(false);
-  let playerName = <span className="player-name">{name}</span>;
+  const [playerName, setPlayerName] = useState(initialName);
 
   function handleEditClick() {
-    setIsEditing(!isEditing);
+    setIsEditing((editing) => !editing);
   }
 
+  function handleChange(event) {
+    setPlayerName(event.target.value);
+  }
+
+  let editablePlayerName = <span className="player-name">{playerName}</span>;
+
   if (isEditing) {
-    playerName = <input type="text" required defaultValue={name}/>
+    editablePlayerName = <input type="text" required defaultValue={playerName} onChange={handleChange}/> // 양방향 바인딩: 입력값 빼내어 수정 후 다시 받음
   }
 
 
   return (
     <li>
       <span className="player">
-        {playerName}
+        {editablePlayerName}
         <span className="player-symbol">{symbol}</span>
       </span>
-      <button onClick={handleEditClick}>{ isEditing ? "Save" : "Edit"}</button>
+      <button onClick={handleEditClick}>{ isEditing ? 'Save' : 'Edit'}</button>
     </li>
   );
 }
