@@ -32,7 +32,10 @@ function App() {
 
   const activePlayer = deriveActivePlayer(gameTurns);
   
-  let gameBoard = initialGameBoard;
+  // Rematch시 배열이 그대로인 오류 방지
+  // js에서 배열은 같은 메모리를 참조하므로 새로운 배열 만들어야 함
+  // deep copy
+  let gameBoard = [...initialGameBoard.map(array => [...array])]; 
 
   for (const turn of gameTurns) {
     const { square, player } = turn;
@@ -73,6 +76,10 @@ function App() {
     });
   }
 
+  function handleRestart() {
+    setGameTurns([]);
+  }
+
   return (
     <main>
       <div id="game-container">
@@ -80,7 +87,7 @@ function App() {
           <Player initialName="Player 1" symbol="X" isActive={activePlayer === 'X'} />
           <Player initialName="Player 2" symbol="O" isActive={activePlayer === 'O'} />
         </ol>
-        {(winner || hasDraw) && <GameOver winner={winner} />}
+        {(winner || hasDraw) && <GameOver winner={winner} onRestart={handleRestart} />}
         <GameBoard
           onSelectSquare={handleSelectSquare}
           board={gameBoard}
